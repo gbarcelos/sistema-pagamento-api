@@ -1,6 +1,7 @@
 package br.com.oak.sistemapagamentoapi.model.jpa;
 
 import br.com.oak.sistemapagamentoapi.model.FormaPagamento;
+import br.com.oak.sistemapagamentoapi.service.RegraAntiFraude;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,6 +13,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -28,10 +30,23 @@ public class Usuario {
   @NotBlank
   private String email;
 
+  @NotNull
+  private Boolean possivelFraudador;
+
   @Size(min = 1)
   @ElementCollection
   @Enumerated(EnumType.STRING)
   private Set<FormaPagamento> formasPagamento = new HashSet<>();
+
+  public Set<FormaPagamento> filtrarFormasDePagamentoAceita(
+      Collection<RegraAntiFraude> regrasAntiFraude,
+      @NotNull Restaurante restaurante) {
+    return formasPagamento.stream()
+        .filter(restaurante::aceitaFormaDePagamento)
+        .filter(formaPagamento -> regrasAntiFraude.stream().allMatch(
+            regraAntiFraude -> regraAntiFraude.permiteFormaDePagamento(formaPagamento, this)))
+        .collect(Collectors.toSet());
+  }
 
   public Long getId() {
     return id;
@@ -39,6 +54,10 @@ public class Usuario {
 
   public String getEmail() {
     return email;
+  }
+
+  public Boolean getPossivelFraudador() {
+    return possivelFraudador;
   }
 
   public Set<FormaPagamento> getFormasPagamento() {
@@ -51,6 +70,10 @@ public class Usuario {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  public void setPossivelFraudador(Boolean possivelFraudador) {
+    this.possivelFraudador = possivelFraudador;
   }
 
   public void setFormasPagamento(
@@ -82,11 +105,5 @@ public class Usuario {
         ", email='" + email + '\'' +
         ", formasPagamento=" + formasPagamento +
         '}';
-  }
-
-  public Set<FormaPagamento> filtrarFormasDePagamentoAceita(@NotNull Restaurante restaurante) {
-    return formasPagamento.stream()
-        .filter(restaurante::aceitaFormaDePagamento)
-        .collect(Collectors.toSet());
   }
 }
