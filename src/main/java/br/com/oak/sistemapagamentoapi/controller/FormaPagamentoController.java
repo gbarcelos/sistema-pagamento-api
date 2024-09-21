@@ -3,13 +3,8 @@ package br.com.oak.sistemapagamentoapi.controller;
 import br.com.oak.sistemapagamentoapi.controller.request.ListarFormasPagamentoRequest;
 import br.com.oak.sistemapagamentoapi.controller.response.FormaPagamentoResponse;
 import br.com.oak.sistemapagamentoapi.model.FormaPagamento;
-import br.com.oak.sistemapagamentoapi.model.jpa.Restaurante;
-import br.com.oak.sistemapagamentoapi.model.jpa.Usuario;
-import br.com.oak.sistemapagamentoapi.service.RegraAntiFraude;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import br.com.oak.sistemapagamentoapi.service.AvaliaFormasDePagamento;
 import jakarta.validation.Valid;
-import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/formas-pagamento")
 public class FormaPagamentoController {
 
-  @PersistenceContext
-  private EntityManager entityManager;
-
   @Autowired
-  private Collection<RegraAntiFraude> regrasAntiFraude; //1
+  private AvaliaFormasDePagamento avaliaFormasDePagamento; //1
 
   @GetMapping
   //1 - FormaPagamentoResponse
@@ -35,19 +27,12 @@ public class FormaPagamentoController {
       //1 - ListarFormasPagamentoRequest
       @RequestBody @Valid ListarFormasPagamentoRequest request) {
 
-    //1 - Usuario
-    Usuario usuario = entityManager.find(Usuario.class, request.getUsuarioId());
-
-    //1 - Restaurante
-    Restaurante restaurante = entityManager.find(Restaurante.class, request.getRestauranteId());
-
-    //1 - filtrarFormasDePagamentoAceita
-    Set<FormaPagamento> formasDePagamentoAceitas = usuario.filtrarFormasDePagamentoAceita(
-        regrasAntiFraude, restaurante);
+    //1 - avaliaFormasDePagamento
+    Set<FormaPagamento> formasDePagamentoAceitas = avaliaFormasDePagamento
+        .filtrarFormasDePagamentoAceita(request.getUsuarioId(), request.getRestauranteId());
 
     //1 - map
     return ResponseEntity.ok(formasDePagamentoAceitas.stream().map(FormaPagamentoResponse::new).collect(
         Collectors.toSet()));
   }
-
 }

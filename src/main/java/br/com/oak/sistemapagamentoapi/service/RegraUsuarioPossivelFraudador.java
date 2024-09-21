@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UsuarioPossivelFraudador implements RegraAntiFraude {
+public class RegraUsuarioPossivelFraudador implements RegraAntiFraude {
 
   @Override
   public boolean permiteFormaDePagamento(@NotNull FormaPagamento formaPagamento,
