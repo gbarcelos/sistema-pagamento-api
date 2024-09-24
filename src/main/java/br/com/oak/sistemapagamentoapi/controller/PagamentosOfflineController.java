@@ -12,17 +12,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/pagamentos/offline")
+@RequestMapping("/pagamentos")
 public class PagamentosOfflineController {
 
   @Autowired
-  private PagamentosOfflineValidator pagamentosOfflineValidator;
+  private PagamentosOfflineValidator pagamentosOfflineValidator; //1 - pagamentosOfflineValidator
 
   @Autowired
   private PedidoClient pedidoClient;
@@ -35,13 +36,13 @@ public class PagamentosOfflineController {
     binder.addValidators(pagamentosOfflineValidator);
   }
 
-  @PostMapping
+  @PostMapping(value = "/offline/{id}")
   //1 - PagamentoResponse
   public ResponseEntity<PagamentoResponse> realizarPagamentoOffline(
-      @RequestBody @Valid PagamentoOfflineRequest request) { //1 - PagamentoRequest
+      @PathVariable Long id, @RequestBody @Valid PagamentoOfflineRequest request) { //1 - PagamentoRequest
 
     //1 - Pedido
-    Pedido pedido = pedidoClient.obterPedidoPorId(request.getPedidoId());
+    Pedido pedido = pedidoClient.obterPedidoPorId(id);
 
     //1 - criarPagamento
     Pagamento pagamento = criarPagamento.executa(pedido, request);

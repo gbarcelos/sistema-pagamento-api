@@ -13,9 +13,6 @@ import jakarta.validation.constraints.NotNull;
 public class PagamentoOfflineRequest {
 
   @NotNull
-  private Long pedidoId;
-
-  @NotNull
   //@EnumNamePattern(regexp = "MAQUINA|DINHEIRO")
   private FormaPagamento formaPagamento;
 
@@ -27,16 +24,11 @@ public class PagamentoOfflineRequest {
   @ExistsValue(domainClass = Restaurante.class)
   private Long restauranteId;
 
-  public PagamentoOfflineRequest(FormaPagamento formaPagamento, Long usuarioId, Long restauranteId,
-      Long pedidoId) {
+  public PagamentoOfflineRequest(FormaPagamento formaPagamento, Long usuarioId,
+      Long restauranteId) {
     this.formaPagamento = formaPagamento;
     this.usuarioId = usuarioId;
     this.restauranteId = restauranteId;
-    this.pedidoId = pedidoId;
-  }
-
-  public Long getPedidoId() {
-    return pedidoId;
   }
 
   public Long getUsuarioId() {
@@ -49,6 +41,10 @@ public class PagamentoOfflineRequest {
 
   public FormaPagamento getFormaPagamento() {
     return formaPagamento;
+  }
+
+  public boolean isOnline() {
+    return formaPagamento.online;
   }
 
   public Pagamento toModel(Usuario usuario, Restaurante restaurante, Pedido pedido) {
