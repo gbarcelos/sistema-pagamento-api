@@ -4,13 +4,13 @@ import br.com.oak.sistemapagamentoapi.model.jpa.Pagamento;
 
 public class PagamentoResponse {
 
-  private final Long id;
+  private final String codigo;
 
   public PagamentoResponse(Pagamento pagamento) {
-    this.id = pagamento.getId();
+    this.codigo = pagamento.getCodigo();
   }
 
-  public Long getId() {
-    return id;
+  public String getCodigo() {
+    return codigo;
   }
 }

@@ -1,6 +1,6 @@
 package br.com.oak.sistemapagamentoapi.controller.request;
 
-import static br.com.oak.sistemapagamentoapi.model.Status.AGUARDANDO_CONFIRMACAO_PAGAMENTO;
+import static br.com.oak.sistemapagamentoapi.model.StatusTransacao.AGUARDANDO_CONFIRMACAO_PAGAMENTO;
 
 import br.com.oak.sistemapagamentoapi.annotation.ExistsValue;
 import br.com.oak.sistemapagamentoapi.model.FormaPagamento;
@@ -47,9 +47,10 @@ public class PagamentoOfflineRequest {
     return formaPagamento.online;
   }
 
-  public Pagamento toModel(Usuario usuario, Restaurante restaurante, Pedido pedido) {
-    return new Pagamento(pedido.getValorTotal(),
-        usuario,
+  public Pagamento toModel(Usuario cliente, Restaurante restaurante, Pedido pedido) {
+    return new Pagamento(pedido.getId(),
+        pedido.getValorTotal(),
+        cliente,
         restaurante,
         AGUARDANDO_CONFIRMACAO_PAGAMENTO,
         formaPagamento);
