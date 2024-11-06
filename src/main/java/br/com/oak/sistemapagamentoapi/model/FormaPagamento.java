@@ -1,5 +1,7 @@
 package br.com.oak.sistemapagamentoapi.model;
 
+import java.util.Arrays;
+
 public enum FormaPagamento {
 
   VISA(true, "cartao visa"), MASTER(true, "cartao master"),
@@ -16,5 +18,9 @@ public enum FormaPagamento {
 
   public String getDescricao() {
     return descricao;
+  }
+
+  public boolean estaEntreAsFormasAceitas(FormaPagamento... formasDePagamentoAceitas) {
+    return Arrays.asList(formasDePagamentoAceitas).contains(this);
   }
 }

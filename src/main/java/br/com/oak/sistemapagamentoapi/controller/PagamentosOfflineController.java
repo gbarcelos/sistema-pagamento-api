@@ -5,7 +5,7 @@ import br.com.oak.sistemapagamentoapi.controller.response.PagamentoResponse;
 import br.com.oak.sistemapagamentoapi.http.PedidoClient;
 import br.com.oak.sistemapagamentoapi.model.Pedido;
 import br.com.oak.sistemapagamentoapi.model.jpa.Pagamento;
-import br.com.oak.sistemapagamentoapi.service.CriarPagamento;
+import br.com.oak.sistemapagamentoapi.service.CriarPagamentoOffline;
 import br.com.oak.sistemapagamentoapi.validator.PagamentosOfflineValidator;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class PagamentosOfflineController {
   private PedidoClient pedidoClient;
 
   @Autowired
-  private CriarPagamento criarPagamento;
+  private CriarPagamentoOffline criarPagamentoOffline;
 
   @InitBinder
   public void init(WebDataBinder binder) {
@@ -37,13 +37,13 @@ public class PagamentosOfflineController {
   @PostMapping(value = "/pagamentos/offline/{pedidoId}")
   //1 - PagamentoResponse
   public ResponseEntity<PagamentoResponse> realizarPagamentoOffline(
-      @PathVariable Long pedidoId, @RequestBody @Valid PagamentoOfflineRequest request) { //1 - PagamentoRequest
+      @PathVariable Long pedidoId, @RequestBody @Valid PagamentoOfflineRequest request) { //1 - PagamentoOfflineRequest
 
     //1 - Pedido
     Pedido pedido = pedidoClient.obterPedidoPorId(pedidoId);
 
     //1 - criarPagamento
-    Pagamento pagamento = criarPagamento.executa(pedido, request);
+    Pagamento pagamento = criarPagamentoOffline.executa(pedido, request);
 
     //1 - PagamentoResponse
     return ResponseEntity.ok(new PagamentoResponse(pagamento));

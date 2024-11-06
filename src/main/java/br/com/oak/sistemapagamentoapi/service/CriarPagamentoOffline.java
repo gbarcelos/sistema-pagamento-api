@@ -11,7 +11,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CriarPagamento {
+public class CriarPagamentoOffline {
 
   @PersistenceContext
   private EntityManager entityManager;
